@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: "Inter", sans-serif;
+}
+
+.object1 {
+  animation: MoveLeftRight1 30s linear infinite;
+  position: absolute;
+}
+
+@keyframes MoveLeftRight1 {
+  0%, 100% {
+    transform: translateX(-3rem);
+  }
+  50% {
+    transform: translateX(calc(50vw - 3rem));
+  }
+}
+
+.object2 {
+  animation: MoveLeftRight2 30s linear infinite;
+  position: absolute;
+}
+
+@keyframes MoveLeftRight2 {
+  0%, 100% {
+    transform: translateX(6rem);
+  }
+  50% {
+    transform: translateX(calc(-50vw + 6rem));
+  }
+}
+
+.object3 {
+  animation: MoveLeftRight3 30s linear infinite;
+  position: absolute;
+}
+
+@keyframes MoveLeftRight3 {
+  0%, 100% {
+    transform: translateX(-5rem);
+  }
+  50% {
+    transform: translateX(calc(50vw - 5rem));
+  }
+}
+
+.object4 {
+  animation: MoveLeftRight4 30s linear infinite;
+  position: absolute;
+}
+
+@keyframes MoveLeftRight4 {
+  0%, 100% {
+    transform: translateX(8rem);
+  }
+  50% {
+    transform: translateX(calc(-50vw + 8rem));
+  }
+}
