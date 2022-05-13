@@ -5,6 +5,7 @@ import moment from 'moment';
 import {
   BrowserRouter as Router, Routes, Route, useParams, Link,
 } from 'react-router-dom';
+import { Switch } from '@headlessui/react';
 
 const getTime = () => {
   const currenTime = new Date();
@@ -21,8 +22,26 @@ function Weather() {
   const [data, setData] = useState();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [theme, setTheme] = React.useState(localStorage.theme);
 
   const { place } = useParams();
+
+  React.useEffect(() => {
+    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.theme = theme;
+  }, [theme]);
 
   useEffect(() => {
     setQuery('');
@@ -42,8 +61,31 @@ function Weather() {
 
   return (data
     ? (
-      <div className="flex h-full lg:h-screen tracking-wide flex-col lg:flex-row">
-        <div className="w-full lg:w-1/2 h-full bg-gradient-to-br from-[#53bfc9] to-cyan-500 flex flex-col justify-center p-12 500:p-20 text-white relative">
+      <div className={`${theme} flex h-full lg:h-screen tracking-wide flex-col lg:flex-row`}>
+        <div className="w-full lg:w-1/2 h-full bg-gradient-to-br from-[#53bfc9] to-cyan-500 dark:from-[#006F79] dark:to-cyan-900 flex flex-col justify-center p-12 500:p-20 text-white relative">
+          <div className="flex items-center gap-6 absolute top-8 right-8">
+            <div className="flex items-center gap-3">
+              <Icon icon="uil:sun" className="w-6 h-6" />
+              <Switch
+                checked={theme === 'dark'}
+                onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className={`${
+                  theme === 'dark' ? 'bg-cyan-700' : 'bg-cyan-500'
+                } relative inline-flex h-6 w-11 items-center rounded-full`}
+              >
+                <span className="sr-only">Enable notifications</span>
+                <span
+                  className={`${
+                    theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block h-4 w-4 transform rounded-full bg-white`}
+                />
+              </Switch>
+              <Icon icon="uil:moon" className="w-[1.3rem] h-[1.3rem]" />
+            </div>
+            <a href="//github.com/melvinchia3636/weatherApp" target="_blank" rel="noopener noreferrer" className="text-white">
+              <Icon icon="uil:github" className="w-6 h-6" />
+            </a>
+          </div>
           <p className="text-xl ml-0.5">{moment(data.location.localtime_epoch * 1000).format('ddd, MMM D')}</p>
           <h1 className="text-5xl mt-12 tracking-wide">
             Good
@@ -73,19 +115,19 @@ function Weather() {
             </p>
           </div>
 
-          <Icon icon="mdi:apple-icloud" className="w-32 h-32 object1 text-white opacity-20 absolute top-16 left-12" />
-          <Icon icon="mdi:apple-icloud" className="w-64 h-64 object2 text-white opacity-20 absolute top-32 right-24" />
-          <Icon icon="mdi:apple-icloud" className="w-44 h-44 object3 text-white opacity-20 absolute bottom-16 left-20" />
-          <Icon icon="mdi:apple-icloud" className="w-52 h-52 object4 text-white opacity-20 absolute bottom-32 right-64" />
-          <svg className="absolute bottom-0 left-0 text-cyan-800 opacity-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="currentColor" fillOpacity="1" d="M0,256L288,224L576,160L864,256L1152,96L1440,128L1440,320L1152,320L864,320L576,320L288,320L0,320Z" /></svg>
+          <Icon icon="mdi:apple-icloud" className="w-32 h-32 object1 text-white opacity-20 dark:opacity-5 absolute top-16 left-12" />
+          <Icon icon="mdi:apple-icloud" className="w-64 h-64 object2 text-white opacity-20 dark:opacity-5 absolute top-32 right-24" />
+          <Icon icon="mdi:apple-icloud" className="w-44 h-44 object3 text-white opacity-20 dark:opacity-5 absolute bottom-16 left-20" />
+          <Icon icon="mdi:apple-icloud" className="w-52 h-52 object4 text-white opacity-20 dark:opacity-5 absolute bottom-32 right-64" />
+          <svg className="absolute bottom-0 left-0 text-cyan-800 dark:text-cyan-600 opacity-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="currentColor" fillOpacity="1" d="M0,256L288,224L576,160L864,256L1152,96L1440,128L1440,320L1152,320L864,320L576,320L288,320L0,320Z" /></svg>
         </div>
-        <div className="w-full lg:w-1/2 h-full text-zinc-700 relative overflow-x-hidden lg:overflow-y-auto flex flex-col">
+        <div className="w-full lg:w-1/2 h-full text-zinc-700 dark:text-zinc-200 dark:bg-zinc-800 relative overflow-x-hidden lg:overflow-y-auto flex flex-col">
           <div className="flex ml-12 500:ml-24 items-end relative mt-8 500:mt-0">
-            <input value={query} onChange={(e) => setQuery(e.target.value)} type="text" placeholder="Location" className="flex-1 border-b-2 border-zinc-200 placeholder-zinc-300 pb-3 text-xl focus:outline-none" />
-            <div className="w-24 h-24 bg-[#53bfc9] flex-shrink-0 items-center justify-center hidden 500:flex">
+            <input value={query} onChange={(e) => setQuery(e.target.value)} type="text" placeholder="Location" className="flex-1 border-b-2 border-zinc-200 placeholder-zinc-300 dark:border-zinc-500 dark:placeholder-zinc-500 bg-transparent pb-3 text-xl focus:outline-none" />
+            <div className="w-24 h-24 bg-[#53bfc9] dark:bg-[#006F79] flex-shrink-0 items-center justify-center hidden 500:flex">
               <Icon icon="uil:search" className="w-6 h-6 text-white" />
             </div>
-            <div className="absolute bottom-0 rounded-b-md left-0 flex w-[calc(100%-6rem)] z-10 flex-col translate-y-full bg-white shadow-lg divide-y">
+            <div className="absolute bottom-0 rounded-b-md left-0 flex w-[calc(100%-6rem)] z-10 flex-col translate-y-full bg-white dark:bg-zinc-700 shadow-lg divide-y">
               {query && !results.length && <p className="py-3 px-4 text-center text-zinc-">No results</p>}
               {results.map((result) => (
                 <Link className="py-3 px-4 w-full" to={`/${result.url}`}>{[result.name, result.region, result.country].filter((e) => e).join(', ')}</Link>
@@ -96,21 +138,21 @@ function Weather() {
             <h2 className="font-medium text-2xl">Weather Details</h2>
             <div className="flex flex-col gap-6 mt-8">
               <div className="flex items-center justify-between text-lg">
-                <Tooltip title={<span className="text-xs p-2 block font-light">Cloud cover (also known as cloudiness, cloudage, or cloud amount) refers to the fraction of the sky obscured by clouds on average when observed from a particular location.</span>}><span className="text-zinc-500 text-base">Cloudy</span></Tooltip>
+                <Tooltip title={<span className="text-xs p-2 block font-light">Cloud cover (also known as cloudiness, cloudage, or cloud amount) refers to the fraction of the sky obscured by clouds on average when observed from a particular location.</span>}><span className="text-zinc-500 dark:text-zinc-400 text-base">Cloudy</span></Tooltip>
                 <span>
                   {data.current.cloud}
                   %
                 </span>
               </div>
               <div className="flex items-center justify-between text-lg">
-                <Tooltip title={<span className="text-xs p-2 block font-light">Humidity is the concentration of water vapour present in the air. Water vapor, the gaseous state of water, is generally invisible to the human eye. Humidity indicates the likelihood for precipitation, dew, or fog to be present. </span>}><span className="text-zinc-500 text-base">Humidity</span></Tooltip>
+                <Tooltip title={<span className="text-xs p-2 block font-light">Humidity is the concentration of water vapour present in the air. Water vapor, the gaseous state of water, is generally invisible to the human eye. Humidity indicates the likelihood for precipitation, dew, or fog to be present. </span>}><span className="text-zinc-500 dark:text-zinc-400 text-base">Humidity</span></Tooltip>
                 <span>
                   {data.current.humidity}
                   %
                 </span>
               </div>
               <div className="flex items-center justify-between text-lg">
-                <Tooltip title={<span className="text-xs p-2 block font-light">Wind is moving air and is caused by differences in air pressure within our atmosphere. Air under high pressure moves toward areas of low pressure. The greater the difference in pressure, the faster the air flows.</span>}><span className="text-zinc-500 text-base">Wind</span></Tooltip>
+                <Tooltip title={<span className="text-xs p-2 block font-light">Wind is moving air and is caused by differences in air pressure within our atmosphere. Air under high pressure moves toward areas of low pressure. The greater the difference in pressure, the faster the air flows.</span>}><span className="text-zinc-500 dark:text-zinc-400 text-base">Wind</span></Tooltip>
                 <span className="flex items-center">
                   <Icon
                     icon="typcn:location-arrow"
@@ -128,21 +170,21 @@ function Weather() {
                 </span>
               </div>
               <div className="flex items-center justify-between text-lg">
-                <Tooltip title={<span className="text-xs p-2 block font-light">That pressure is called atmospheric pressure, or air pressure. It is the force exerted on a surface by the air above it as gravity pulls it to Earth. Atmospheric pressure is commonly measured with a barometer. In a barometer, a column of mercury in a glass tube rises or falls as the weight of the atmosphere changes.</span>}><span className="text-zinc-500 text-base">Pressure</span></Tooltip>
+                <Tooltip title={<span className="text-xs p-2 block font-light">That pressure is called atmospheric pressure, or air pressure. It is the force exerted on a surface by the air above it as gravity pulls it to Earth. Atmospheric pressure is commonly measured with a barometer. In a barometer, a column of mercury in a glass tube rises or falls as the weight of the atmosphere changes.</span>}><span className="text-zinc-500 dark:text-zinc-400 text-base">Pressure</span></Tooltip>
                 <span>
                   {data.current.pressure_mb.toLocaleString()}
                   mb
                 </span>
               </div>
               <div className="flex items-center justify-between text-lg">
-                <Tooltip title={<span className="text-xs p-2 block font-light">In meteorology, visibility is a measure of the distance at which an object or light can be clearly discerned. It depends only on the transparency of the surrounding air; as such, it is unchanging no matter the ambient light level or time of day. </span>}><span className="text-zinc-500 text-base">Visibility</span></Tooltip>
+                <Tooltip title={<span className="text-xs p-2 block font-light">In meteorology, visibility is a measure of the distance at which an object or light can be clearly discerned. It depends only on the transparency of the surrounding air; as such, it is unchanging no matter the ambient light level or time of day. </span>}><span className="text-zinc-500 dark:text-zinc-400 text-base">Visibility</span></Tooltip>
                 <span>
                   {data.current.vis_km}
                   km
                 </span>
               </div>
               <div className="flex items-center justify-between text-lg">
-                <Tooltip title={<span className="text-xs p-2 block font-light">gust, in meteorology, a sudden increase in wind speed above the average wind speed. More specifically, wind speed must temporarily peak above 16 knots (about 30 km per hour) after accelerating by at least 9–10 knots (about 17–19 km per hour) to qualify as a gust.</span>}><span className="text-zinc-500 text-base">Gust Wind Speed</span></Tooltip>
+                <Tooltip title={<span className="text-xs p-2 block font-light">gust, in meteorology, a sudden increase in wind speed above the average wind speed. More specifically, wind speed must temporarily peak above 16 knots (about 30 km per hour) after accelerating by at least 9–10 knots (about 17–19 km per hour) to qualify as a gust.</span>}><span className="text-zinc-500 dark:text-zinc-400 text-base">Gust Wind Speed</span></Tooltip>
                 <span>
                   {data.current.gust_kph}
                   km/h
@@ -155,7 +197,7 @@ function Weather() {
             <div className="flex flex-col gap-5 mt-8">
               {data.forecast.forecastday.map((day) => (
                 <div className="flex items-center justify-between">
-                  <span className="text-zinc-500">{moment(day.date_epoch * 1000).format('ddd, MMM D')}</span>
+                  <span className="text-zinc-500 dark:text-zinc-400">{moment(day.date_epoch * 1000).format('ddd, MMM D')}</span>
                   <img alt={day.day.condition.text} src={day.day.condition.icon.replace('64x64', '128x128')} className="w-12 h-12" />
                 </div>
               ))}

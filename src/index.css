@@ -4,8 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+*:not(.MuiTooltip-popper, .MuiTooltip-tooltip) {
   font-family: "Inter", sans-serif;
+  transition: all 0.3s !important
 }
 
 .object1 {
